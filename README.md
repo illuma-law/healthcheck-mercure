@@ -4,15 +4,15 @@
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-mercure?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-mercure)
 
-A focused mercure extension health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
+A focused mercure health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
 
-This package provides a simple, direct health check to verify that the `vector` extension (mercure) is properly installed and active in your PostgreSQL database. This is critical for applications that rely on mercure for storing AI embeddings and running semantic/similarity searches.
+This package provides a simple, direct health check to verify that your application's Mercure hub is reachable and responding to HTTP requests.
 
 ## Features
 
-- **Version Detection:** Checks if the `vector` extension is enabled and reports the specific mercure version installed.
-- **Configurable Strictness:** Choose whether a missing mercure extension should return a Warning (degraded) or a Failure (broken) status for your application.
-- **Query Safety:** Safely handles database connection errors or missing tables, returning a failed state with the exception message instead of crashing the health check suite.
+- **Reachability Check:** Verifies that your Laravel application can successfully connect to the configured Mercure hub URL.
+- **HTTP Status Validation:** Ensures the Mercure hub returns a successful HTTP status code (2xx).
+- **Configurable Timeout:** Respects your configured timeout settings to prevent the health check from hanging.
 
 ## Installation
 
@@ -22,24 +22,6 @@ Require this package with composer:
 composer require illuma-law/healthcheck-mercure
 ```
 
-## Configuration
-
-You can publish the config file with:
-
-```shell
-php artisan vendor:publish --tag="healthcheck-mercure-config"
-```
-
-The `healthcheck-mercure.php` config file allows you to define whether the check is strictly required by default. 
-
-```php
-return [
-    // If true, the check will FAIL when the extension is missing.
-    // If false, it will generate a WARNING instead.
-    'required' => false,
-];
-```
-
 ## Usage & Integration
 
 Register the check inside your application's health service provider (e.g. `AppServiceProvider` or a dedicated `HealthServiceProvider`), alongside your other Spatie Laravel Health checks:
@@ -47,25 +29,11 @@ Register the check inside your application's health service provider (e.g. `AppS
 ### Basic Registration
 
 ```php
-use IllumaLaw\HealthCheckMercure\MercureExtensionCheck;
+use IllumaLaw\HealthCheckMercure\MercureCheck;
 use Spatie\Health\Facades\Health;
 
 Health::checks([
-    MercureExtensionCheck::new(),
-]);
-```
-
-### Fluent Configuration
-
-You can override the config file's default strictness on a per-check basis using the fluent `required()` method. 
-
-```php
-use IllumaLaw\HealthCheckMercure\MercureExtensionCheck;
-use Spatie\Health\Facades\Health;
-
-Health::checks([
-    // Make the health check FAIL immediately if mercure is missing
-    MercureExtensionCheck::new()->required(true),
+    MercureCheck::new(),
 ]);
 ```
 
@@ -73,10 +41,8 @@ Health::checks([
 
 The check interacts with the Spatie Health dashboard and JSON endpoints using these states:
 
-- **Ok:** The mercure extension is installed. The short summary and meta data will include the exact installed version (e.g. `0.7.0`).
-- **Warning:** mercure is missing, but `required` is set to `false`.
-- **Failed:** mercure is missing and `required` is set to `true`.
-- **Failed (Exception):** The database query to `pg_extension` throws an exception (e.g., database connection down).
+- **Ok:** Mercure hub is reachable and returned a 2xx status code.
+- **Failed:** Mercure hub was unreachable, timed out, or returned an error status code (4xx/5xx).
 
 ## Testing
 
