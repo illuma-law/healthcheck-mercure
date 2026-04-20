@@ -21,7 +21,7 @@ it('fails when mercure hub url is not configured', function () {
 
 it('succeeds when mercure hub is reachable', function () {
     config()->set('broadcasting.connections.mercure.url', 'http://mercure.test');
-    
+
     Http::fake([
         'mercure.test*' => Http::response('ok', 200),
     ]);
@@ -33,7 +33,7 @@ it('succeeds when mercure hub is reachable', function () {
 
 it('fails when mercure hub returns error', function () {
     config()->set('broadcasting.connections.mercure.url', 'http://mercure.test');
-    
+
     Http::fake([
         'mercure.test*' => Http::response('error', 500),
     ]);
@@ -45,10 +45,10 @@ it('fails when mercure hub returns error', function () {
 
 it('fails when mercure hub is unreachable', function () {
     config()->set('broadcasting.connections.mercure.url', 'http://mercure.test');
-    
+
     Http::fake([
         'mercure.test*' => function () {
-            throw new \Exception('Unreachable');
+            throw new Exception('Unreachable');
         },
     ]);
 
