@@ -1,14 +1,14 @@
 {
-    "name": "illuma-law/healthcheck-pgvector",
-    "description": "Focused pgvector extension health check for Spatie's Laravel Health package.",
+    "name": "illuma-law/healthcheck-mercure",
+    "description": "Focused mercure extension health check for Spatie's Laravel Health package.",
     "keywords": [
         "illuma-law",
         "laravel",
         "health",
-        "pgvector",
+        "mercure",
         "postgres"
     ],
-    "homepage": "https://github.com/illuma-law/healthcheck-pgvector",
+    "homepage": "https://github.com/illuma-law/healthcheck-mercure",
     "license": "MIT",
     "authors": [
         {
@@ -40,12 +40,12 @@
     },
     "autoload": {
         "psr-4": {
-            "IllumaLaw\\HealthCheckPgvector\\": "src/"
+            "IllumaLaw\\HealthCheckMercure\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "IllumaLaw\\HealthCheckPgvector\\Tests\\": "tests/"
+            "IllumaLaw\\HealthCheckMercure\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -66,7 +66,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "IllumaLaw\\HealthCheckPgvector\\HealthcheckPgvectorServiceProvider"
+                "IllumaLaw\\HealthCheckMercure\\HealthcheckMercureServiceProvider"
             ]
         }
     },
