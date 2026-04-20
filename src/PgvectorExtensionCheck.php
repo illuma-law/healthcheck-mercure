@@ -28,15 +28,15 @@ final class PgvectorExtensionCheck extends Check
             $row = DB::selectOne("select extversion as version from pg_extension where extname = 'vector' limit 1");
         } catch (Throwable $exception) {
             return $result
-                ->failed(__('healthcheck-pgvector::messages.query_failed', ['message' => $exception->getMessage()]))
+                ->failed($this->translate('healthcheck-pgvector::messages.query_failed', ['message' => $exception->getMessage()]))
                 ->shortSummary('Query failed');
         }
 
-        $version = is_object($row) && isset($row->version) ? (string) $row->version : null;
+        $version = $this->extractVersion($row);
 
-        if ($version !== null && $version !== '') {
+        if ($version !== null) {
             return $result
-                ->ok(__('healthcheck-pgvector::messages.installed', ['version' => $version]))
+                ->ok($this->translate('healthcheck-pgvector::messages.installed', ['version' => $version]))
                 ->shortSummary($version)
                 ->meta(['installed_version' => $version]);
         }
@@ -44,9 +44,32 @@ final class PgvectorExtensionCheck extends Check
         $isRequired = $this->required ?? (bool) config('healthcheck-pgvector.required', false);
 
         if ($isRequired) {
-            return $result->failed(__('healthcheck-pgvector::messages.missing'))->shortSummary('Missing');
+            return $result->failed($this->translate('healthcheck-pgvector::messages.missing'))->shortSummary('Missing');
         }
 
-        return $result->warning(__('healthcheck-pgvector::messages.not_installed'))->shortSummary('Not installed');
+        return $result->warning($this->translate('healthcheck-pgvector::messages.not_installed'))->shortSummary('Not installed');
+    }
+
+    private function extractVersion(mixed $row): ?string
+    {
+        if (! is_object($row) || ! property_exists($row, 'version')) {
+            return null;
+        }
+
+        $version = $row->version;
+
+        if (! is_string($version) || $version === '') {
+            return null;
+        }
+
+        return $version;
+    }
+
+    /** @param array<string, string> $replace */
+    private function translate(string $key, array $replace = []): string
+    {
+        $translation = __($key, $replace);
+
+        return is_string($translation) ? $translation : $key;
     }
 }

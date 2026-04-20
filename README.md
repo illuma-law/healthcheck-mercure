@@ -5,19 +5,33 @@
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-pgvector?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-pgvector)
 
-**Focused pgvector extension health check for Spatie's Laravel Health package**
+**Focused pgvector extension health check for [Spatie's Laravel Health](https://github.com/spatie/laravel-health) package**
 
 This package provides a single, focused health check that verifies whether the `vector` PostgreSQL extension (pgvector) is installed in your database, reports its version when present, and optionally treats its absence as a hard failure instead of a warning.
 
+---
+
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
   - [Basic Registration](#basic-registration)
   - [Fluent Configuration](#fluent-configuration)
+  - [Result States](#result-states)
 - [Testing](#testing)
 - [Changelog](#changelog)
+- [Security](#security)
 - [Credits](#credits)
 - [License](#license)
+
+---
+
+## Requirements
+
+- **PHP** 8.2 or higher
+- **Laravel** 11, 12, or 13
+- **spatie/laravel-health** ^1.39
+- A PostgreSQL database
 
 ## Installation
 
@@ -67,47 +81,69 @@ Health::checks([
 
 ### Fluent Configuration
 
-You can override the config value at registration time using the fluent `required()` method:
+Override the config value at registration time using the fluent `required()` method:
 
 ```php
+use IllumaLaw\HealthCheckPgvector\PgvectorExtensionCheck;
+use Spatie\Health\Facades\Health;
+
 Health::checks([
     // Hard-fail in this environment regardless of config
-    PgverExtensionCheck::new()->required(true),
+    PgvectorExtensionCheck::new()->required(true),
+
+    // Only warn when missing (default behaviour)
+    PgvectorExtensionCheck::new()->required(false),
 ]);
 ```
 
-#### Result States
+### Result States
 
 | State | Condition |
 | :--- | :--- |
-| **Ok** | pgvector is installed — reports the installed version |
+| **Ok** | pgvector is installed — short summary reports the installed version |
 | **Warning** | pgvector is not installed and `required` is `false` |
 | **Failed** | pgvector is not installed and `required` is `true` |
 | **Failed** | The query to `pg_extension` throws an exception |
 
 ## Testing
 
-The package ships with a Pest test suite. To run it locally:
+The package ships with a Pest test suite. To run it locally, install dependencies first:
+
+```bash
+composer install
+```
+
+Run the full test suite:
 
 ```bash
 composer test
 ```
 
-To run tests with coverage:
+Run tests with code coverage:
 
 ```bash
 composer test-coverage
 ```
 
-To run static analysis:
+Run static analysis:
 
 ```bash
 composer analyse
 ```
 
+Apply code style fixes:
+
+```bash
+composer format
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Security
+
+If you discover any security related issues, please email support@illuma.law instead of using the issue tracker.
 
 ## Credits
 

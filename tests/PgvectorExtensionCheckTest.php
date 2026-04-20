@@ -71,6 +71,32 @@ it('treats empty string version as missing when required', function () {
         ->and($result->shortSummary)->toBe('Missing');
 });
 
+it('treats a row object without a version property as not installed', function () {
+    DB::shouldReceive('selectOne')
+        ->once()
+        ->andReturn((object) []);
+
+    $result = PgvectorExtensionCheck::new()
+        ->required(false)
+        ->run();
+
+    expect($result->status)->toEqual(Status::warning())
+        ->and($result->shortSummary)->toBe('Not installed');
+});
+
+it('treats a row object with a non-string version as not installed', function () {
+    DB::shouldReceive('selectOne')
+        ->once()
+        ->andReturn((object) ['version' => null]);
+
+    $result = PgvectorExtensionCheck::new()
+        ->required(false)
+        ->run();
+
+    expect($result->status)->toEqual(Status::warning())
+        ->and($result->shortSummary)->toBe('Not installed');
+});
+
 it('fails when query throws exception', function () {
     DB::shouldReceive('selectOne')
         ->once()

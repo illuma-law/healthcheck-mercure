@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IllumaLaw\HealthCheckPgvector\Tests;
 
-use IllumaLaw\HealthCheckPgvector\PgvectorVitalsServiceProvider;
+use IllumaLaw\HealthCheckPgvector\HealthcheckPgvectorServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\Health\HealthServiceProvider;
 
@@ -14,7 +14,7 @@ class TestCase extends Orchestra
     {
         return [
             HealthServiceProvider::class,
-            PgvectorVitalsServiceProvider::class,
+            HealthcheckPgvectorServiceProvider::class,
         ];
     }
 }

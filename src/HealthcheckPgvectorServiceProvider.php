@@ -7,7 +7,7 @@ namespace IllumaLaw\HealthCheckPgvector;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-final class PgvectorVitalsServiceProvider extends PackageServiceProvider
+final class HealthcheckPgvectorServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
